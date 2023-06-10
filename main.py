@@ -3,9 +3,10 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
+from cfg import access, token
 
 
-bot = Bot("6133560304:AAGKJFWkCyRroXfd0YYNYl9meIj3ierGv-s", parse_mode='html')
+bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 
 
@@ -19,9 +20,13 @@ class Mutes(StatesGroup):
 
 @dp.message_handler(commands=['jails'])
 async def get_date(message: types.Message):
+
+    if message.from_user.id not in access:
+        return await message.answer("У вас нет доступа к использованию бота!")
+
     await Jails.date.set()
     await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: Месяц-День. Пример: 01-30"
+        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день. Пример: 01-30"
     )
 
 
@@ -34,9 +39,6 @@ async def get_jails(message: types.Message, state: FSMContext):
 
         link = get_link(date=message.text, description='Посадил в деморган игрока', category=41, offset=offset)
         response = get_response(link)
-
-        if response is None:
-            return await message.answer("По запросу ничего не найдено.")
 
         for tup in response:
             if tup["player_name"] in jails:
@@ -62,6 +64,10 @@ async def get_jails(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands=['mutes'])
 async def get_date(message: types.Message):
+
+    if message.from_user.id not in access:
+        return await message.answer("У вас нет доступа к использованию бота!")
+
     await Mutes.date.set()
     await message.answer(
         "Укажите дату, за которую хотите получить выгрузку в следующем формате: Месяц-День. Пример: 01-30"
@@ -77,9 +83,6 @@ async def get_mutes(message: types.Message, state: FSMContext):
 
         link = get_link(date=message.text, description='Выдал мут игроку', category=41, offset=offset)
         response = get_response(link)
-
-        if response is None:
-            return await message.answer("По запросу ничего не найдено.")
 
         for tup in response:
             if tup["player_name"] in mutes:
@@ -105,11 +108,17 @@ async def get_mutes(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands=['farm'])
 async def farm(message: types.Message):
+
+    if message.from_user.id not in access:
+        return await message.answer("У вас нет доступа к использованию бота!")
     ...
 
 
 @dp.message_handler(commands=['search'])
 async def search(message: types.Message):
+
+    if message.from_user.id not in access:
+        return await message.answer("У вас нет доступа к использованию бота!")
     ...
 
 

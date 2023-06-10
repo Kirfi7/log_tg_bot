@@ -1,5 +1,6 @@
 import requests
 import urllib.parse
+from cfg import session
 
 
 def get_link(date, nick=None, description=None, category=None, offset=None):
@@ -10,4 +11,4 @@ def get_link(date, nick=None, description=None, category=None, offset=None):
 
 
 def get_response(url):
-    return requests.get(url=url, cookies={"sessionid": "f0fu6ulfulthpio1xdcns5sjr2onop3e"}).json()
+    return requests.get(url=url, cookies=session).json()
