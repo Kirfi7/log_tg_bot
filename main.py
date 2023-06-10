@@ -3,57 +3,51 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-from cfg import access, token
+from cfg import access, token, req_types
 
 
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 
 
-class Jails(StatesGroup):
+class Date(StatesGroup):
     date = State()
 
 
-class Mutes(StatesGroup):
-    date = State()
+@dp.message_handler(commands=['jails', 'mutes', 'kicks', 'events', 'reports'])
+async def get_date(message: types.Message, state: FSMContext):
 
-class Kickes(StatesGroup):
-    date = State()
+    if not(message.from_user.id in access):
+        return await message.answer("У вас нет доступа к использованию бота!")
 
-class Mero(StatesGroup):
-    date = State()
+    async with state.proxy() as data:
+        data['request'] = req_types[message.text]
 
-class Bans(StatesGroup):
-    date = State()
-
-
-@dp.message_handler(commands=['jails'])
-async def get_date(message: types.Message):
-
-    # if not (message.from_user.id in access):
-    #     return await message.answer("У вас нет доступа к использованию бота!")
-
-    await Jails.date.set()
+    await Date.date.set()
     await message.answer(
         "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день. Пример: 01-30"
     )
 
 
-@dp.message_handler(state=Jails.date)
+@dp.message_handler(state=Date.date)
 async def get_jails(message: types.Message, state: FSMContext):
-    await Jails.date.set()
-    jails = {}
+    await Date.date.set()
+    dictionary = {}
     offset = 0
+
+    async with state.proxy() as data:
+        req = data['request']
+
     while True:
 
-        link = get_link(date=message.text, description='Посадил в деморган игрока', category=41, offset=offset)
-        response = get_response(link)
+        link = await get_link(date=message.text, **req, offset=offset)
+        response = await get_response(link)
 
         for tup in response:
-            if tup["player_name"] in jails:
-                jails[tup["player_name"]] += 1
+            if tup["player_name"] in dictionary:
+                dictionary[tup["player_name"]] += 1
             else:
-                jails[tup["player_name"]] = 1
+                dictionary[tup["player_name"]] = 1
 
         if len(response) == 200:
             offset += 200
@@ -61,193 +55,14 @@ async def get_jails(message: types.Message, state: FSMContext):
         break
 
     msg, k = "", 0
-    top = dict(sorted(jails.items(), key=lambda item: item[1], reverse=True))
+    top = dict(sorted(dictionary.items(), key=lambda item: item[1], reverse=True))
 
     for key in top:
         k += 1
         msg += f"{k}. {key}: {top[key]}\n"
 
     await state.finish()
-    await message.answer(msg)
-
-
-@dp.message_handler(commands=['mutes'])
-async def get_date(message: types.Message):
-
-    # if not (message.from_user.id in access):
-    #     return await message.answer("У вас нет доступа к использованию бота!")
-
-    await Mutes.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: Месяц-День. Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=Mutes.date)
-async def get_mutes(message: types.Message, state: FSMContext):
-    await Mutes.date.set()
-    mutes = {}
-    offset = 0
-    while True:
-
-        link = get_link(date=message.text, description='Выдал мут игроку', category=41, offset=offset)
-        response = get_response(link)
-
-        for tup in response:
-            if tup["player_name"] in mutes:
-                mutes[tup["player_name"]] += 1
-            else:
-                mutes[tup["player_name"]] = 1
-
-        if len(response) == 200:
-            offset += 200
-            continue
-        break
-
-    msg, k = "", 0
-    top = dict(sorted(mutes.items(), key=lambda item: item[1], reverse=True))
-
-    for key in top:
-        k += 1
-        msg += f"{k}. {key}: {top[key]}\n"
-
-    await state.finish()
-    await message.answer(msg)
-
-
-@dp.message_handler(commands=['kickes'])
-async def get_date(message: types.Message):
-
-    # if not (message.from_user.id in access):
-    #     return await message.answer("У вас нет доступа к использованию бота!")
-
-    await Kickes.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день. Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=Kickes.date)
-async def get_kickes(message: types.Message, state: FSMContext):
-    await Kickes.date.set()
-    kickes = {}
-    offset = 0
-    while True:
-
-        link = get_link(date=message.text, description='Кикнул', category=41, offset=offset)
-        response = get_response(link)
-
-        for tup in response:
-            if tup["player_name"] in kickes:
-                kickes[tup["player_name"]] += 1
-            else:
-                kickes[tup["player_name"]] = 1
-
-        if len(response) == 200:
-            offset += 200
-            continue
-        break
-
-    msg, k = "", 0
-    top = dict(sorted(kickes.items(), key=lambda item: item[1], reverse=True))
-
-    for key in top:
-        k += 1
-        msg += f"{k}. {key}: {top[key]}\n"
-
-    await state.finish()
-    await message.answer(msg)
-
-
-@dp.message_handler(commands=['mp'])
-async def get_date(message: types.Message):
-
-    # if not (message.from_user.id in access):
-    #     return await message.answer("У вас нет доступа к использованию бота!")
-
-    await Mero.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день. Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=Mero.date)
-async def get_mero(message: types.Message, state: FSMContext):
-    await Mero.date.set()
-    mero = {}
-    offset = 0
-    while True:
-
-        link = get_link(date=message.text, description='Создал мероприятие', category=41, offset=offset)
-        response = get_response(link)
-
-        for tup in response:
-            if tup["player_name"] in mero:
-                mero[tup["player_name"]] += 1
-            else:
-                mero[tup["player_name"]] = 1
-
-        if len(response) == 200:
-            offset += 200
-            continue
-        break
-
-    msg, k = "", 0
-    top = dict(sorted(mero.items(), key=lambda item: item[1], reverse=True))
-
-    for key in top:
-        k += 1
-        msg += f"{k}. {key}: {top[key]}\n"
-
-    await state.finish()
-    await message.answer(msg)
-
-
-# @dp.message_handler(commands=['ban'])
-# async def get_date(message: types.Message):
-#
-#     # if not (message.from_user.id in access):
-#     #     return await message.answer("У вас нет доступа к использованию бота!")
-#
-#     await Bans.date.set()
-#     await message.answer(
-#         "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день. Пример: 01-30"
-#     )
-#
-#
-# @dp.message_handler(state=Bans.date)
-# async def get_bans(message: types.Message, state: FSMContext):
-#     await Bans.date.set()
-#     bans = {}
-#     offset = 0
-#     while True:
-#
-#
-#         link = get_link(date=message.text, description='заблокировал', offset=offset)
-#         response = get_response(link)
-#
-#         for tup in response:
-#             if tup["player_name"] in bans:
-#                 bans[tup["player_name"]] += 1
-#             else:
-#                 bans[tup["player_name"]] = 1
-#
-#         if len(response) == 200:
-#             offset += 200
-#             continue
-#         break
-#
-#     msg, k = "", 0
-#     top = dict(sorted(bans.items(), key=lambda item: item[1], reverse=True))
-#
-#     for key in top:
-#         k += 1
-#         msg += f"{k}. {key}: {top[key]}\n"
-#
-#     await state.finish()
-#     await message.answer(msg)
-
-
+    await message.answer(f"{msg}\nВсего за день: {sum(top.values())}")
 
 
 @dp.message_handler(commands=['farm'])
