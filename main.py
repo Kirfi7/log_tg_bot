@@ -26,7 +26,7 @@ async def get_date(message: types.Message):
 
 
 @dp.message_handler(state=Jails.date)
-async def get_jails(message: types.Message):
+async def get_jails(message: types.Message, state: FSMContext):
     await Jails.date.set()
     jails = {}
     offset = 0
@@ -34,6 +34,9 @@ async def get_jails(message: types.Message):
 
         link = get_link(date=message.text, description='Посадил в деморган игрока', category=41, offset=offset)
         response = get_response(link)
+
+        if response is None:
+            return await message.answer("По запросу ничего не найдено.")
 
         for tup in response:
             if tup["player_name"] in jails:
@@ -53,6 +56,7 @@ async def get_jails(message: types.Message):
         k += 1
         msg += f"{k}. {key}: {top[key]}\n"
 
+    await state.finish()
     await message.answer(msg)
 
 
@@ -65,7 +69,7 @@ async def get_date(message: types.Message):
 
 
 @dp.message_handler(state=Mutes.date)
-async def get_mutes(message: types.Message):
+async def get_mutes(message: types.Message, state: FSMContext):
     await Mutes.date.set()
     mutes = {}
     offset = 0
@@ -73,6 +77,9 @@ async def get_mutes(message: types.Message):
 
         link = get_link(date=message.text, description='Выдал мут игроку', category=41, offset=offset)
         response = get_response(link)
+
+        if response is None:
+            return await message.answer("По запросу ничего не найдено.")
 
         for tup in response:
             if tup["player_name"] in mutes:
@@ -92,7 +99,18 @@ async def get_mutes(message: types.Message):
         k += 1
         msg += f"{k}. {key}: {top[key]}\n"
 
+    await state.finish()
     await message.answer(msg)
+
+
+@dp.message_handler(commands=['farm'])
+async def farm(message: types.Message):
+    ...
+
+
+@dp.message_handler(commands=['search'])
+async def search(message: types.Message):
+    ...
 
 
 if __name__ == "__main__":
