@@ -29,6 +29,21 @@ async def get_date(message: types.Message, state: FSMContext):
     )
 
 
+@dp.message_handler(commands=['online'])
+async def get_date(message: types.Message, state: FSMContext):
+
+    if not(message.from_user.id in access):
+        return await message.answer("У вас нет доступа к использованию бота!")
+
+    async with state.proxy() as data:
+        data['request'] = req_types[message.text]
+
+    await Date.date.set()
+    await message.answer(
+        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-деньTчас:минуты Пример: 01-30T23:30"
+    )
+
+
 @dp.message_handler(state=Date.date)
 async def get_jails(message: types.Message, state: FSMContext):
     await Date.date.set()
