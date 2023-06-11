@@ -10,3 +10,5 @@ sheet = client.open("ADMINS RED1").worksheet("Успеваемость адми�
 def get_admin_list():
     admin_nicks = sheet.col_values(2)[1:]
     return [nick for nick in admin_nicks if nick != '']
+
+print(get_admin_list())

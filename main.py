@@ -4,6 +4,9 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from cfg import access, token, req_types
+from table import (
+    get_admin_list
+)
 
 
 bot = Bot(token=token, parse_mode='html')
@@ -29,7 +32,7 @@ async def get_date(message: types.Message, state: FSMContext):
     )
 
 
-@dp.message_handler(commands=['online'])
+@dp.message_handler(commands=['online', 'casino'])
 async def get_date(message: types.Message, state: FSMContext):
 
     if not(message.from_user.id in access):
@@ -43,6 +46,42 @@ async def get_date(message: types.Message, state: FSMContext):
         "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-деньTчас:минуты Пример: 01-30T23:30"
     )
 
+@dp.message_handler(state=Date.date)
+async def get_jails(message: types.Message, state: FSMContext):
+    await Date.date.set()
+    dictionary = {}
+    offset = 0
+
+    async with state.proxy() as data:
+        req = data['request']
+
+    while True:
+
+        link = await get_link(date=message.text, **req, offset=offset)
+        response = await get_response(link)
+
+        admins = get_admin_list()
+
+        for tup in response:
+            if tup["player_name"] in dictionary and (tup["player_name"] in admins):
+                dictionary[tup["player_name"]] += 1
+            else:
+                dictionary[tup["player_name"]] = 1
+
+        if len(response) == 200:
+            offset += 200
+            continue
+        break
+
+    msg, k = "", 0
+    top = dict(sorted(dictionary.items(), key=lambda item: item[1], reverse=True))
+
+    for key in top:
+        k += 1
+        msg += f"{k}. {key}: {top[key]}\n"
+
+    await state.finish()
+    await message.answer(f"{msg}\nВсего за день: {sum(top.values())}")
 
 @dp.message_handler(state=Date.date)
 async def get_jails(message: types.Message, state: FSMContext):

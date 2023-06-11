@@ -12,5 +12,6 @@ req_types = {
     '/mutes': {"description": "Выдал мут игроку", "category": 41},
     '/kicks': {"description": "Кикнул", "category": 41},
     '/events': {"description": "Создал мероприятие", "category": 41},
-    '/reports': {"description": "Вопрос:", "category": 40}
+    '/reports': {"description": "Вопрос:", "category": 40},
+    '/casino': {"description": "Сделал ставку в казино", "category": 3}
 }
