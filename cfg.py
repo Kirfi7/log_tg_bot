@@ -1,25 +1,20 @@
-session = {"sessionid": "f0fu6ulfulthpio1xdcns5sjr2onop3e"}
-
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets",
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
-access = {1831358099: "Миша", 777198928: "Кирилл", 1174671150: "Прохор"}
+access = {1831358099, 777198928, 1174671150}
 
-token = "6133560304:AAGKJFWkCyRroXfd0YYNYl9meIj3ierGv-s"
-
-top_commands = ['top_jails', 'top_mutes', 'top_kicks', 'top_events', 'top_rep', 'top_ask']
+token = "5842526004:AAEVF56nVnXvcMULw4tieC58UYBEyq-ku5I"
 
 req_types = {
-    '/jails': {"description": "Посадил в деморган игрока", "category": 41},
-    '/mutes': {"description": "Выдал мут игроку", "category": 41},
-    '/kicks': {"description": "Кикнул", "category": 41},
-    '/events': {"description": "Создал мероприятие", "category": 41},
-    '/reports': {"description": "(Вопрос:", "category": 40},
-    '/questions': {"description": "] ответ", "category": 40},
-    '/top_jails': {"description": "Посадил в деморган игрока", "category": 41},
-    '/top_mutes': {"description": "Выдал мут игроку", "category": 41},
-    '/top_events': {"description": "Создал мероприятие", "category": 41},
-    '/top_rep': {"description": "(Вопрос:", "category": 40},
-    '/top_ask': {"description": "] ответ", "category": 40},
-    '/top_kicks': {"description": "Кикнул", "category": 41},
+    'Джаилы': {"description": "Посадил", "category": 41},
+    'Муты': {"description": "Выдал мут", "category": 41},
+    'Кики': {"description": "Кикнул", "category": 41},
+    'Мероприятия': {"description": "Создал мероприятие", "category": 41},
+    'Репорты': {"description": "(Вопрос:", "category": 40},
+    'Вопросы': {"description": "] ответ", "category": 40},
 }
+
+date_message = "Укажите дату, за которую вы хотите получить выгрузку\nФормат: день.месяц | Пример: 31.05"
+logs_message = "Укажите дату, с которой начинается неделя\nФормат: день.месяц | Пример: 31.05"
+datetime_message = "Укажите дату и время, за которые вы хотите получить выгрузку\nФормат: день.месяц час:минута | Пример: 31.05 23:59"
+param_message = "Укажите параметры в следующем формате: первое_место вычет | Пример: 500 100"

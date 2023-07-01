@@ -1,186 +1,174 @@
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, executor
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 
-from crud import get_top, true_value, true_params, get_online, get_stats_text
-from cfg import access, token, req_types, top_commands
-from table import get_admin_list
+from crud import *
+from buttons import *
+from cfg import *
 
 
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 
 
-class Date(StatesGroup):
+class TopState(StatesGroup):
     date = State()
-    params = State()
+    param = State()
+    top_type = State()
 
 
-class Online(StatesGroup):
-    date = State()
-    time = State()
+class MainStats(StatesGroup):
+    param = State()
+    logs = State()
+    online = State()
+    helpers = State()
+    stats_date = State()
 
 
-class Ban(StatesGroup):
-    date = State()
+@dp.message_handler(commands=['start'])
+async def start(message: types.Message):
+    if message.from_user.id in access:
+        await bot.send_message(message.from_user.id, "Выберите действие", reply_markup=menu)
 
 
-class StatsDate(StatesGroup):
-    date = State()
-
-
-@dp.message_handler(commands=['jails', 'mutes', 'kicks', 'events', 'reports', 'questions'] + top_commands)
-async def get_date(message: types.Message, state: FSMContext):
-
+@dp.message_handler(commands=['session'])
+async def set_session(message: types.Message):
     if message.from_user.id not in access:
-        return await message.answer("У вас нет доступа к использованию бота!")
-
-    async with state.proxy() as data:
-        data['request'] = req_types[message.text]
-
-    if message.text[1:] in top_commands:
-        await Date.params.set()
-        return await message.answer("Укажите параметры в следующем формате: первое_место-вычет | Пример: 500-100")
-
-    await Date.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день | Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=Date.params)
-async def get_params(message: types.Message, state: FSMContext):
-    await Date.params.set()
-
-    if not await true_params(message.text):
-        return await message.answer("Указаны недопустимые значения.")
-
-    async with state.proxy() as data:
-        data['params'] = message.text.split('-')
-
-    await Date.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день | Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=Date.date)
-async def get_list(message: types.Message, state: FSMContext):
-    await Date.date.set()
-
-    if not await true_value(message.text, "-"):
-        await state.finish()
-        return await message.answer("Указаны недопустимые значения.")
-
-    async with state.proxy() as data:
-        req = data['request']
-        params = data['params'] if "params" in data else False
-
-    await state.finish()
-    await message.answer(await get_top(date=message.text, **req, params=params))
-
-
-@dp.message_handler(commands=['bans', 'top_bans'])
-async def get_bans(message: types.Message, state: FSMContext):
-
-    if message.from_user.id not in access:
-        return await message.answer("У вас нет доступа к использованию бота!")
-
-    async with state.proxy() as data:
-        data['request'] = req_types[message.text]
-
-    await Ban.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день | Пример: 01-30"
-    )
-
-
-@dp.message_handler(commands=['online'])
-async def get_date(message: types.Message):
-
-    if message.from_user.id not in access:
-        return await message.answer("У вас нет доступа к использованию бота!")
-
-    await Online.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день | Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=Online.date)
-async def get_time(message: types.Message, state: FSMContext):
-    await Online.date.set()
-
-    if not await true_value(message.text, "-"):
-        await state.finish()
-        return await message.answer("Указаны недопустимые значения.")
-
-    async with state.proxy() as data:
-        data['date'] = message.text
-
-    await Online.time.set()
-    await message.answer("Укажите время, за которое хотите получить выгрузку в формате часы:минуты | Пример: 23:59")
-
-
-@dp.message_handler(state=Online.time)
-async def get_list(message: types.Message, state: FSMContext):
-    await Online.time.set()
-
-    if not await true_value(message.text, ":"):
-        await state.finish()
-        return await message.answer("Указаны недопустимые значения.")
-
-    async with state.proxy() as data:
-        date = data['date']
-
-    online_list = await get_online(await get_admin_list(), date=date, time=message.text)
-
-    await state.finish()
-    await message.answer("Список админов онлайн:\n\n" + "\n".join(online_list))
-
-
-@dp.message_handler(commands=['stats'])
-async def server_info(message: types.Message):
-
-    if message.from_user.id not in access:
-        return await message.answer("У вас нет доступа к использованию бота!")
-
-    await StatsDate.date.set()
-    await message.answer(
-        "Укажите дату, за которую хотите получить выгрузку в следующем формате: месяц-день | Пример: 01-30"
-    )
-
-
-@dp.message_handler(state=StatsDate.date)
-async def server_info(message: types.Message, state: FSMContext):
-    await StatsDate.date.set()
-    await state.finish()
-    await message.answer(await get_stats_text(message.text))
-
-
-@dp.message_handler(commands=['casino'])
-async def check_casino(message: types.Message):
-
-    if message.from_user.id not in access:
-        return await message.answer("У вас нет доступа к использованию бота!")
-    ...
-
-
-@dp.message_handler(commands=['search'])
-async def search(message: types.Message):
-
-    if message.from_user.id not in access:
-        return await message.answer("У вас нет доступа к использованию бота!")
-    ...
-
-
-@dp.message_handler(commands=['farm'])
-async def farm(message: types.Message):
-
-    if message.from_user.id not in [1831358099, 777198928]:
         return
-    ...
+    array = message.text.split()
+    if len(array) == 2:
+        await set_session_id(array[1])
+        return await message.reply("ID сессии успешно установлен!")
+    await message.reply("Укажите ID сессии через пробел после команды.")
+
+
+@dp.message_handler(content_types=['text'])
+async def select_type(message: types.Message, state: FSMContext):
+
+    text, user = message.text, message.from_user.id
+    if user not in access:
+        return
+
+    if text == "Основные выгрузки":
+        await message.answer("Выберите тип выгрузки", reply_markup=main_markup)
+        await MainStats.param.set()
+    if text in ["Сформировать топ", "Поощрение по топу"]:
+        await message.answer("Выберите тип выгрузки", reply_markup=top_markup)
+        await TopState.top_type.set()
+        async with state.proxy() as data:
+            data['type'] = text
+
+
+@dp.message_handler(state=MainStats.param)
+async def get_main_date(message: types.Message, state: FSMContext):
+    await MainStats.param.set()
+    text = message.text
+
+    if text == "Статистика по серверу":
+        await MainStats.stats_date.set()
+        await message.reply(date_message, reply_markup=get_keyboard())
+    elif text == "Количество логов":
+        await MainStats.logs.set()
+        await message.reply(logs_message, reply_markup=get_logs_keyboard())
+    elif text == "Агенты поддержки":
+        await message.answer("Статистика агентов поддержки:\n\n" + await get_helpers_stats(), reply_markup=menu)
+        await state.finish()
+    elif text == "Онлайн админов":
+        await MainStats.online.set()
+        await message.reply(datetime_message, reply_markup=types.ReplyKeyboardRemove())
+    elif text == "В главное меню":
+        await state.finish()
+        await start(message)
+    else:
+        await message.reply("Указан некорректный тип!")
+        await state.finish()
+        await start(message)
+
+
+@dp.message_handler(state=MainStats.stats_date)
+async def get_stats(message: types.Message, state: FSMContext):
+    await MainStats.stats_date.set()
+    if not await true_date(message.text):
+        if message.text == "В главное меню":
+            await start(message)
+            return await state.finish()
+        await message.reply("Указаны неверные значения!", reply_markup=menu)
+        return await state.finish()
+    await message.answer(await get_stats_text(message.text), reply_markup=menu)
+    await state.finish()
+
+
+@dp.message_handler(state=MainStats.logs)
+async def get_logs(message: types.Message, state: FSMContext):
+    await MainStats.logs.set()
+    if not await true_date(message.text):
+        await message.reply("Указаны неверные значения!", reply_markup=menu)
+        return await state.finish()
+    await message.answer(await get_chief_logs(message.text), reply_markup=menu)
+    await state.finish()
+
+
+@dp.message_handler(state=MainStats.online)
+async def get_admins_online(message: types.Message, state: FSMContext):
+    await MainStats.online.set()
+    if not await true_time(message.text):
+        await message.reply("Указаны неверные значения!", reply_markup=menu)
+        return await state.finish()
+    await message.answer("Список админов онлайн:\n\n" + "\n".join(await get_online(*message.text.split())), reply_markup=menu)
+    await state.finish()
+
+
+@dp.message_handler(state=TopState.top_type)
+async def get_top_type(message: types.Message, state: FSMContext):
+    await TopState.top_type.set()
+    if message.text not in req_types:
+        if message.text == "В главное меню":
+            await start(message)
+            return await state.finish()
+        await state.finish()
+        return await message.reply("Указан неверный тип выгрузки!")
+    async with state.proxy() as data:
+        data['request'] = req_types[message.text]
+        is_top = True if data['type'] == "Поощрение по топу" else False
+    if is_top and message.text != "Баны":
+        await message.reply(param_message, reply_markup=param_markup)
+        return await TopState.param.set()
+    elif is_top and message.text == "Баны":
+        ...
+    await message.reply(date_message, reply_markup=get_keyboard())
+    await TopState.date.set()
+
+
+@dp.message_handler(state=TopState.param)
+async def get_param(message: types.Message, state: FSMContext):
+    await TopState.param.set()
+    if not await true_params(message.text):
+        if message.text == "В главное меню":
+            await start(message)
+            return await state.finish()
+        await message.reply("Указаны неверные значения!", reply_markup=menu)
+        return await state.finish()
+    async with state.proxy() as data:
+        data['params'] = message.text.split()
+    await message.answer(date_message, reply_markup=get_keyboard())
+    await TopState.date.set()
+
+
+@dp.message_handler(state=TopState.date)
+async def get_date(message: types.Message, state: FSMContext):
+    await TopState.param.set()
+    if not await true_date(message.text):
+        if message.text == "В главное меню":
+            await start(message)
+            return await state.finish()
+        await message.reply("Указаны неверные значения!", reply_markup=menu)
+        return await state.finish()
+    async with state.proxy() as data:
+        params = data['params'] if "params" in data else False
+        req = data['request']
+    await message.answer(await get_top(date=message.text, **req, params=params), reply_markup=menu)
+    await state.finish()
 
 
 if __name__ == "__main__":

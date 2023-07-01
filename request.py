@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
-from cfg import session
+import datetime
+import json
 
 
 async def get_link(date, nick=None, description=None, category=None, offset=None):
@@ -25,8 +26,19 @@ async def get_moment_link(nick, date, time):
     return f"https://logs.blackrussia.online/gslogs/1/api/list-game-logs/?category_id__exact=38&player_name__exact={nick}&player_id__exact=&player_ip__exact=&transaction_amount__exact=&balance_after__exact=&transaction_desc__ilike=%25%25&time__gte=2023-{month}-{day}T00%3A00&time__lte=2023-{date}T{time.replace(':', '%3A')}&order_by=time&offset=0&auto=false"
 
 
+async def get_logs_link(nick, start_date, offset):
+    day, month = start_date.split(".")
+    now_date = datetime.date.today()
+    end_date = datetime.date(2023, int(month), int(day)) + datetime.timedelta(days=6)
+    if end_date > now_date:
+        end_date = now_date
+    return f"https://logs.blackrussia.online/gslogs/1/api/list-game-logs/?category_id__exact=&player_name__exact={nick}&player_id__exact=&player_ip__exact=&transaction_amount__exact=&balance_after__exact=&transaction_desc__ilike=%25%25&time__gte=2023-{month}-{day}T00%3A00&time__lte={end_date}T23%3A59&order_by=time&offset={offset}&auto=false"
+
+
 async def get_response(url):
-    return requests.get(url=url, cookies=session).json()
+    with open("settings.json", mode="r+") as file:
+        data = json.load(file)
+    return requests.get(url=url, cookies=data['session']).json()
 
 
 async def get_count_per_day(date, category, description):
