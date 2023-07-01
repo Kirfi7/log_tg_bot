@@ -37,8 +37,7 @@ _type_buttons = [
     [
         types.KeyboardButton(text="Джаилы"),
         types.KeyboardButton(text="Муты"),
-        types.KeyboardButton(text="Кики"),
-        types.KeyboardButton(text="Баны")
+        types.KeyboardButton(text="Кики")
     ],
     [
         types.KeyboardButton(text="В главное меню")
