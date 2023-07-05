@@ -7,7 +7,7 @@ from crud import *
 from buttons import *
 from cfg import *
 
-
+# Хуй
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 
