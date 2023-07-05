@@ -2,19 +2,27 @@ name: Python-Bot
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.11.4
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11.4"
-    - name: Install
-      run: |
-            python3 main.py &
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.4
+
+      - name: Install
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.192.168.1.141 }}
+          username: ${{ secrets.pi }}
+          password: ${{ secrets.Kirbel357 }}
+          script: |
+            python main.py &
