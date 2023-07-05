@@ -23,7 +23,7 @@ jobs:
       - name: Install
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.RASPBERRY_PI_IP }}
+          host: ${{ env.RASPBERRY_PI_IP }}
           username: ${{ secrets.pi }}
           password: ${{ secrets.Kirbel357 }}
           script: |
