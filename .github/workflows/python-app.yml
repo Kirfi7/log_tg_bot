@@ -1,0 +1,20 @@
+name: Python-Bot
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.11.4
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11.4"
+    - name: Install
+      run: |
+            python3 main.py &
