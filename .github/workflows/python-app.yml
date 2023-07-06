@@ -26,5 +26,6 @@ jobs:
           host: ${{ env.RASPBERRY_PI_IP }}
           username: ${{ secrets.pi }}
           password: ${{ secrets.Kirbel357 }}
+          key: ${{ secrets.SHA256:Z67e5/LuKW2vp7WrCQH8pQzZRQwxoVODdl8y4v052+E }}
           script: |
             python main.py &
