@@ -20,8 +20,8 @@ jobs:
         with:
           python-version: 3.11.4
 
-      - name: Install
-        uses: appleboy/ssh-action@main
+      - name: Install SSH Action
+        uses: appleboy/ssh-action@latest
         with:
           host: ${{ env.RASPBERRY_PI_IP }}
           username: ${{ secrets.pi }}
