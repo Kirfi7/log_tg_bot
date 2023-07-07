@@ -27,7 +27,7 @@ jobs:
         
     - name: Run Python Bot
       run: |
-        pkill -f main.py
+        killall -q -9 python3 main.py
         sleep 1  # Дайте время для завершения предыдущего экземпляра
         python3 main.py
 
