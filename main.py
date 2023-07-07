@@ -10,7 +10,7 @@ from cfg import *
 
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
-# АХАХХАХА
+
 
 class TopState(StatesGroup):
     date = State()
