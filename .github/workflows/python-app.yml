@@ -23,4 +23,3 @@ jobs:
 
     - name: Run Python Bot
       run: python bot.py # Укажите имя файла вашего Python-бота
-
