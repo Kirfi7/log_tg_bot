@@ -18,6 +18,11 @@ jobs:
       with:
         python-version: '3.10.12'
 
+    - name: Install Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install aiogram
+
     - name: Git Pull
       run: git pull origin main
 
