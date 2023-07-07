@@ -26,4 +26,4 @@ jobs:
         python3 -m pip install oauth2client
 
     - name: Run Python Bot
-      run: screen -dmS bot python3 main.py
+      run: pm2 reload log_tg_bot
