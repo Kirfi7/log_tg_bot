@@ -1,6 +1,4 @@
-name: Python-Bot
-env:
-  RASPBERRY_PI_IP: 192.168.1.141
+name: Run Python Bot
 
 on:
   push:
@@ -8,24 +6,21 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11.4
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10' # Укажите нужную версию Python, например, '3.8'
 
-      - name: Install SSH Action
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.RASPBERRY_PI_IP }}
-          username: ${{ secrets.pi }}
-          password: ${{ secrets.Kirbel357 }}
-          key: ${{ secrets.SHA256_SLUG }}
-          script: |
-            python main.py &
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run Python Bot
+      run: python bot.py # Укажите имя файла вашего Python-бота
+
