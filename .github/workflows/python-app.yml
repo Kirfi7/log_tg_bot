@@ -26,4 +26,4 @@ jobs:
         python3 -m pip install oauth2client
 
     - name: Run Python Bot
-      run: python3 main.py &
+      run: python3 main.py
