@@ -26,4 +26,4 @@ jobs:
         python3 -m pip install oauth2client
 
     - name: Run Python Bot
-      run: nohup python3 main.py
+      run: screen -dmS bot python3 main.py
