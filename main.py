@@ -6,7 +6,7 @@ from aiogram.dispatcher import FSMContext
 from crud import *
 from buttons import *
 from cfg import *
-
+# 1
 
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
