@@ -20,3 +20,4 @@ jobs:
 
     - name: Run Python Bot
       run: python3 main.py &
+      
