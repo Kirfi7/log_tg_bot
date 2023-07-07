@@ -18,6 +18,8 @@ jobs:
       with:
         python-version: '3.10.12'
 
+    - name: Git Pull
+      run: git pull origin main
+
     - name: Run Python Bot
       run: python3 main.py &
-      
