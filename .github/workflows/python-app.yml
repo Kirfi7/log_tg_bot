@@ -26,8 +26,5 @@ jobs:
         python3 -m pip install oauth2client
         
     - name: Run Python Bot
-      run: |
-        killall -q -9 python3 main.py
-        sleep 1  # Дайте время для завершения предыдущего экземпляра
+      run:
         python3 main.py
-
