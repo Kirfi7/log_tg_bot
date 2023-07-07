@@ -25,8 +25,5 @@ jobs:
         python3 -m pip install gspread
         python3 -m pip install oauth2client
 
-    - name: Git Pull
-      run: git pull origin main
-
     - name: Run Python Bot
       run: python3 main.py &
