@@ -2,7 +2,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from cfg import scope
 
-creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name("/home/runner/work/log_tg_bot/log_tg_bot/creds.json", scope)
 client = gspread.authorize(creds)
 admin_sheet = client.open("ADMINS RED1").worksheet("Успеваемость администрации")
 helper_sheet = client.open("HELPERS RED").worksheet("Успеваемость агентов поддержки")
