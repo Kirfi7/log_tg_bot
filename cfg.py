@@ -3,7 +3,7 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 
 access = {1831358099, 777198928, 1174671150, 1634625613}
 
-token = "6133560304:AAGKJFWkCyRroXfd0YYNYl9meIj3ierGv-s"
+token = "6133560304:AAH0HJZL-eLi5MrrmI_SDxgnRAkf_ZyrVNo"
 
 req_types = {
     'Джаилы': {"description": "Посадил", "category": 41},
