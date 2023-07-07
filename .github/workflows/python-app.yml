@@ -24,6 +24,10 @@ jobs:
         python3 -m pip install aiogram
         python3 -m pip install gspread
         python3 -m pip install oauth2client
-
+        
     - name: Run Python Bot
-      run: python3 main.py
+      run: |
+        killall -q -9 python3 main.py
+        sleep 1  # Дайте время для завершения предыдущего экземпляра
+        python3 main.py
+
