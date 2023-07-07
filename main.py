@@ -10,7 +10,6 @@ from cfg import *
 
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
-# Абв
 
 
 class TopState(StatesGroup):
