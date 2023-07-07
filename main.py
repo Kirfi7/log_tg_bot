@@ -7,7 +7,7 @@ from crud import *
 from buttons import *
 from cfg import *
 
-# Тестовый коммент
+
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 
