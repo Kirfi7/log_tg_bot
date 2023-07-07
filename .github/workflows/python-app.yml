@@ -22,4 +22,4 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Run Python Bot
-      run: python bot.py # Укажите имя файла вашего Python-бота
+      run: python main.py & # Укажите имя файла вашего Python-бота
