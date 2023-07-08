@@ -132,7 +132,7 @@ async def get_helpers_stats():
 
 
 async def get_chief_logs(start_date):
-    logs, chief = [], ["Kirfi_Marciano", "Ricardo_Vendetta", "Prokhor_Adzinets", "Mikhail_Pearson", "Serega_Forestry"]
+    logs, chief = [], ["Kirfi_Marciano", "Prokhor_Adzinets", "Mikhail_Pearson", "Serega_Forestry"]
 
     for nick in chief:
         offset = 0
