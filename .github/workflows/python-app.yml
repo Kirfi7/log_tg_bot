@@ -24,4 +24,4 @@ jobs:
         python3 -m pip install aiogram
         python3 -m pip install gspread
         python3 -m pip install oauth2client
-        python3 main.py
+        python3 main.py &
