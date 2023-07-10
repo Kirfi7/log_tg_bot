@@ -171,4 +171,7 @@ async def get_date(message: types.Message, state: FSMContext):
 
 
 if __name__ == "__main__":
-    executor.start_polling(dispatcher=dp, skip_updates=True)
+    try:
+        executor.start_polling(dispatcher=dp, skip_updates=True)
+    except Exception as error:
+        print(error)
