@@ -10,7 +10,7 @@ helper_sheet = client.open("HELPERS RED").worksheet("Успеваемость а
 
 async def get_admin_list():
     admin_nicks = admin_sheet.col_values(2)[1:]
-    return [nick for nick in admin_nicks if nick not in ['', 'Charlie_Marciano', 'Yaroslav_Belousov']]
+    return [nick for nick in admin_nicks if nick not in ['', 'Mikhail_Mendeleev', 'Yaroslav_Belousov']]
 
 
 async def get_helpers_dict():
