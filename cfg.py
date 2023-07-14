@@ -1,7 +1,7 @@
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets",
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
-access = {1831358099, 777198928, 1174671150}
+access = {1831358099, 777198928, 1174671150, 602064856}
 
 token = "6133560304:AAH0HJZL-eLi5MrrmI_SDxgnRAkf_ZyrVNo"
 test_tok = "5842526004:AAEVF56nVnXvcMULw4tieC58UYBEyq-ku5I"
