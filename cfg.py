@@ -11,7 +11,7 @@ req_types = {
     'Муты': {"description": "Выдал мут", "category": 41},
     'Кики': {"description": "Кикнул", "category": 41},
     'Мероприятия': {"description": "Создал мероприятие", "category": 41},
-    'Репорты': {"description": "(Вопрос:", "category": 40},
+    'Репорты': {"description": "Жалоба от", "category": 40},
     'Вопросы': {"description": "] ответ", "category": 40},
 }
 
