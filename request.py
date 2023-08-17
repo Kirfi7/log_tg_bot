@@ -38,7 +38,8 @@ async def get_logs_link(nick, start_date, offset):
 async def get_response(url):
     with open("settings.json", mode="r+") as file:
         data = json.load(file)
-    return requests.get(url=url, cookies=data['session']).json()
+    response = await aiohttp.get(url, cookies=data['session'])
+    return response.json()
 
 
 async def get_count_per_day(date, category, description):
