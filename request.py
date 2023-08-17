@@ -1,3 +1,4 @@
+import aiohttp
 import requests
 import urllib.parse
 import datetime
@@ -38,8 +39,10 @@ async def get_logs_link(nick, start_date, offset):
 async def get_response(url):
     with open("settings.json", mode="r+") as file:
         data = json.load(file)
-    response = await aiohttp.get(url, cookies=data['session'])
-    return response.json()
+
+    async with aiohttp.ClientSession(cookies=data['session']) as session:
+        async with session.get(url) as response:
+            return await response.json()
 
 
 async def get_count_per_day(date, category, description):

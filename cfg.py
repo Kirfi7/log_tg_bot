@@ -4,7 +4,6 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 access = {1831358099, 777198928, 1174671150, 602064856}
 
 token = "6133560304:AAH0HJZL-eLi5MrrmI_SDxgnRAkf_ZyrVNo"
-test_tok = "5842526004:AAEVF56nVnXvcMULw4tieC58UYBEyq-ku5I"
 
 req_types = {
     'Джаилы': {"description": "Посадил", "category": 41},

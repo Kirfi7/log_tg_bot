@@ -178,9 +178,4 @@ async def get_date(message: types.Message, state: FSMContext):
 
 
 if __name__ == "__main__":
-    try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(executor.start_polling(dispatcher=dp, skip_updates=True))
-        # executor.start_polling(dispatcher=dp, skip_updates=True)
-    except Exception as error:
-        print(error)
+    executor.start_polling(dispatcher=dp, skip_updates=True)
