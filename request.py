@@ -40,8 +40,8 @@ async def get_response(url):
     with open("settings.json", mode="r+") as file:
         data = json.load(file)
 
-    async with aiohttp.ClientSession(cookies=data['session']) as session:
-        async with session.get(url) as response:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, cookies=data['session']) as response:
             return await response.json()
 
 
