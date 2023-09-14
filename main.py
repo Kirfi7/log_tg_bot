@@ -2,12 +2,6 @@ from aiogram import Bot, Dispatcher, executor
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
-import asyncio
-from aiogram import types
-from aiogram import Bot, Dispatcher, executor
-from aiogram.dispatcher.filters.state import StatesGroup, State
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.dispatcher import FSMContext
 
 from crud import *
 from buttons import *
@@ -15,7 +9,7 @@ from cfg import *
 
 bot = Bot(token=token, parse_mode='html')
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
-# 121
+# 12121
 
 
 class TopState(StatesGroup):
